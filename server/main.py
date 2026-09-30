@@ -33,7 +33,7 @@ def login(request: LoginRequest, db: Session = Depends(get_db)):
 
 @app.post("/transfer")
 def transfer(request: TransferRequest, db: Session = Depends(get_db)):
-    tx_data = request.dict()
+    tx_data = request.model_dump()
     resultado = business_logic.process_transaction(db, tx_data)
     if "error" in resultado:
         raise HTTPException(status_code=resultado.get("status_code", 400), detail=resultado["error"])
