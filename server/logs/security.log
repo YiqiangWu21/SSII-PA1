@@ -1,1 +1,7 @@
 2026-10-01 12:40:39,790 | WARNING | RECHAZADO [cabeceras_ausentes] nonce=''
+2026-10-01 12:49:31,862 | INFO | ACEPTADO nonce='1d7cc574-9397-43a8-80dc-3828af4e3bc0'
+2026-10-01 12:49:32,085 | WARNING | RECHAZADO [firma_invalida] nonce='48ed5652-236c-4d7b-b8be-6ba3d37aac8d'
+2026-10-01 12:49:32,292 | WARNING | RECHAZADO [firma_invalida] nonce='a0ccccb2-9e3f-4191-b8d4-cfcea4d11869'
+2026-10-01 12:49:32,497 | WARNING | RECHAZADO [replay_nonce_repetido] nonce='1d7cc574-9397-43a8-80dc-3828af4e3bc0'
+2026-10-01 12:49:32,723 | WARNING | RECHAZADO [timestamp_fuera_de_ventana] nonce='ceea5ef5-bd01-4407-9e50-64ce1ff7c335'
+2026-10-01 12:49:32,946 | WARNING | RECHAZADO [nonce_formato_invalido] nonce='1D7CC574-9397-43A8-80DC-3828AF4E3BC0'

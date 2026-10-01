@@ -1,0 +1,37 @@
+
+=== Caso A_tamano_real_64B  (64 bytes, 150 rondas) ===
+comparador         1er byte distinto    mediana (ns)              Q1-Q3 (ns)
+==                                 0            38.1                 37 - 40
+==                                16            39.2                 38 - 41
+==                                32            39.5                 38 - 41
+==                                48            39.5                 38 - 42
+==                                63            40.2                 38 - 42
+compare_digest                     0            55.7                 53 - 59
+compare_digest                    16            55.4                 53 - 59
+compare_digest                    32            55.1                 53 - 58
+compare_digest                    48            55.5                 53 - 59
+compare_digest                    63            55.5                 53 - 58
+
+Variación entre fallar en el primer byte y en el último:
+   ==              : +5.5 %   (x1.06)
+   compare_digest  : -0.4 %   (x1.00)
+
+=== Caso B_ampliado_1MB  (1000000 bytes, 100 rondas) ===
+comparador         1er byte distinto    mediana (ns)              Q1-Q3 (ns)
+==                                 0            80.0                60 - 105
+==                            250000          9352.5             7398 - 9828
+==                            500000         16720.0           14554 - 19526
+==                            750000         29002.5           24111 - 30634
+==                            999999         39997.5           34492 - 42816
+compare_digest                     0        510017.5         496414 - 536196
+compare_digest                250000        509630.0         496856 - 527875
+compare_digest                500000        509350.0         497205 - 528786
+compare_digest                750000        509890.0         497268 - 525581
+compare_digest                999999        506562.5         496916 - 525834
+
+Variación entre fallar en el primer byte y en el último:
+   ==              : +49896.9 %   (x499.97)
+   compare_digest  : -0.7 %   (x0.99)
+
+Datos guardados en C:\Users\Usuario\Documents\UNIVERSIDAD\4º\SSII\PAIs\PAI1\SSII-PA1\evidencias\tiempos.csv
+Gráfica guardada en C:\Users\Usuario\Documents\UNIVERSIDAD\4º\SSII\PAIs\PAI1\SSII-PA1\evidencias\tiempos.png
