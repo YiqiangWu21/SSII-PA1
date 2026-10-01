@@ -77,4 +77,4 @@ async def security_validation(
         _reject(401, "Nonce ya utilizado.", "replay_nonce_repetido", nonce)
 
     logger.info("ACEPTADO nonce=%r", nonce)
-    return Tru
+    return True
