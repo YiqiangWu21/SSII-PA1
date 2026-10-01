@@ -7,10 +7,12 @@ from database.database import engine, get_db, Base
 from database import business_logic
 from database import models
 
+from security.middleware import security_validation
+
 # Crear las tablas al iniciar
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="SecBank API")
+app = FastAPI(title="SecBank API", dependencies=[Depends(security_validation)])
 
 class LoginRequest(BaseModel):
     username: str
