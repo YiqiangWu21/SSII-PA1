@@ -1,0 +1,49 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.4, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\Usuario\AppData\Local\Programs\Python\Python312\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\Usuario\Documents\UNIVERSIDAD\4º\SSII\PAIs\PAI1\SSII-PA1\server
+configfile: pytest.ini
+testpaths: tests
+plugins: anyio-4.15.1
+collecting ... collected 32 items
+
+tests/test_crypto.py::test_firma_correcta_se_verifica PASSED             [  3%]
+tests/test_crypto.py::test_cuerpo_distinto_no_se_verifica PASSED         [  6%]
+tests/test_crypto.py::test_firma_con_caracteres_no_ascii_devuelve_false_sin_lanzar_error PASSED [  9%]
+tests/test_crypto.py::test_firma_vacia_devuelve_false PASSED             [ 12%]
+tests/test_crypto.py::test_la_firma_es_hmac_sha256_hex_de_64_caracteres PASSED [ 15%]
+tests/test_crypto.py::test_clave_insegura_impide_arrancar[None] PASSED   [ 18%]
+tests/test_crypto.py::test_clave_insegura_impide_arrancar[] PASSED       [ 21%]
+tests/test_crypto.py::test_clave_insegura_impide_arrancar[zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz] PASSED [ 25%]
+tests/test_crypto.py::test_clave_insegura_impide_arrancar[abababababababababababababababab] PASSED [ 28%]
+tests/test_crypto.py::test_clave_insegura_impide_arrancar[0000000000000000000000000000000000000000000000000000000000000000] PASSED [ 31%]
+tests/test_crypto.py::test_clave_valida_de_256_bits_se_acepta PASSED     [ 34%]
+tests/test_middleware.py::test_peticion_legitima_es_aceptada PASSED      [ 37%]
+tests/test_middleware.py::test_sin_cabeceras_de_seguridad_400 PASSED     [ 40%]
+tests/test_middleware.py::test_falta_una_cabecera_400[X-Timestamp] PASSED [ 43%]
+tests/test_middleware.py::test_falta_una_cabecera_400[X-Nonce] PASSED    [ 46%]
+tests/test_middleware.py::test_falta_una_cabecera_400[X-Signature] PASSED [ 50%]
+tests/test_middleware.py::test_mitm_cuerpo_alterado_es_rechazado PASSED  [ 53%]
+tests/test_middleware.py::test_mitm_firma_alterada_es_rechazada PASSED   [ 56%]
+tests/test_middleware.py::test_firma_con_clave_incorrecta_es_rechazada PASSED [ 59%]
+tests/test_middleware.py::test_timestamp_alterado_invalida_la_firma PASSED [ 62%]
+tests/test_middleware.py::test_replay_mismo_paquete_es_rechazado PASSED  [ 65%]
+tests/test_middleware.py::test_timestamp_fuera_de_ventana_es_rechazado[-60] PASSED [ 68%]
+tests/test_middleware.py::test_timestamp_fuera_de_ventana_es_rechazado[60] PASSED [ 71%]
+tests/test_middleware.py::test_timestamp_dentro_de_ventana_es_aceptado PASSED [ 75%]
+tests/test_middleware.py::test_nonce_con_formato_invalido_es_rechazado[abc] PASSED [ 78%]
+tests/test_middleware.py::test_nonce_con_formato_invalido_es_rechazado[A4A7CE91-94D8-4607-97D6-5561A95E5DB3] PASSED [ 81%]
+tests/test_middleware.py::test_nonce_con_formato_invalido_es_rechazado[8b1f5e8110874dbb989b5ed57c4d3d69] PASSED [ 84%]
+tests/test_middleware.py::test_nonce_con_formato_invalido_es_rechazado[123e4567-e89b-12d3-a456-426614174000] PASSED [ 87%]
+tests/test_middleware.py::test_nonce_en_mayusculas_no_permite_burlar_el_replay PASSED [ 90%]
+tests/test_middleware.py::test_firma_invalida_no_guarda_el_nonce PASSED  [ 93%]
+tests/test_middleware.py::test_se_purgan_los_nonces_caducados PASSED     [ 96%]
+tests/test_middleware.py::test_los_rechazos_quedan_registrados_en_el_log PASSED [100%]
+
+============================== warnings summary ===============================
+..\..\..\..\..\..\..\..\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\Usuario\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 32 passed, 1 warning in 0.23s ========================

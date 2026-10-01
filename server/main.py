@@ -9,6 +9,9 @@ from database import models
 
 from security.middleware import security_validation
 
+from security.logging_config import setup_security_logging
+setup_security_logging()
+
 # Crear las tablas al iniciar
 Base.metadata.create_all(bind=engine)
 

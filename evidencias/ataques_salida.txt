@@ -1,0 +1,16 @@
+Servidor: http://127.0.0.1:8000/transfer
+
+[OK] 1. Petición legítima
+        respuesta: 200 {"status":"registrada","tx_id":"bd52f6c2-30a0-4b66-9bea-88cc1e9a9e00"}
+[OK] 2. MitM: cuerpo alterado en tránsito
+        respuesta: 401 Firma inválida.
+[OK] 3. MitM: firma alterada
+        respuesta: 401 Firma inválida.
+[OK] 4. Replay: mismo paquete reenviado
+        respuesta: 401 Nonce ya utilizado.
+[OK] 5. Replay: timestamp caducado (hace 120 s)
+        respuesta: 401 La solicitud ha expirado.
+[OK] 6. Replay: nonce en mayúsculas
+        respuesta: 400 Formato de nonce inválido.
+
+Resultado: 6/6 escenarios como se esperaba
