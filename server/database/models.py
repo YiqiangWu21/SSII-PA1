@@ -14,6 +14,7 @@ class User(Base):
     # Campos para mitigar ataques de fuerza bruta
     failed_login_attempts = Column(Integer, default=0)
     locked_until = Column(DateTime, nullable=True)
+    active_token = Column(String, nullable=True)
 
 class Transaction(Base):
     __tablename__ = "transactions"
