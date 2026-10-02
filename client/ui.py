@@ -42,7 +42,12 @@ def build_transfer(origin: str, destination: str, amount: float) -> dict:
 
 # ---------- CLI Interface ----------
 def main():
-    client = SecBankClient(SecurityManager.from_env()) # Initializes the SecBankClient with a SecurityManager instance created from an environment variable containing the HMAC key
+    try:
+        client = SecBankClient(SecurityManager.from_env()) # Initializes the SecBankClient with a SecurityManager instance created from an environment variable containing the HMAC key
+    except (RuntimeError, ValueError) as e:
+        print(f"[-] Error de inicialización: {e}")
+        sys.exit(1)
+    
     while True:
         print("\n" + "=" * 30 + "\n🏦 SECBANK - TERMINAL CLIENTE\n" + "=" * 30)
         print("1. Registrar usuario\n2. Iniciar sesión\n3. Enviar transferencia\n4. Cerrar sesión\n5. Salir")
@@ -51,6 +56,9 @@ def main():
         if opcion == "1": # Registers a new user (username + password) on the server
             user = input("Nuevo usuario: ").strip()
             pwd = getpass("Contraseña (mín. 8 caracteres): ")
+            if len(pwd) < 8: # Checks if the password meets the minimum length requirement of 8 characters
+                print("[-] La contraseña debe tener al menos 8 caracteres.")
+                continue
             ok = client.register(user, pwd)
             print("[+] Usuario registrado. Ya puedes iniciar sesión." if ok else f"[-] Registro rechazado: {client.last_error}")
         elif opcion == "2": # Prompts the user for their username and password, and attempts to log in using the SecBankClient instance
