@@ -62,6 +62,8 @@ class SecBankClient: # Manages the client-server REST API communication
             detail = json.loads(raw).get("detail", raw)
         except (ValueError, AttributeError):
             return raw
+        if isinstance(detail, dict): # If detail is a dictionary, it returns the 'error' field if it exists
+            return str(detail.get("error", detail))
         if isinstance(detail, list): # If detail is a list, it concatenates the messages into a single string
             return "; ".join(str(d.get("msg", d)) if isinstance(d, dict) else str(d) for d in detail)
         return str(detail) # If detail is a string, it returns it as is
@@ -76,6 +78,7 @@ class SecBankClient: # Manages the client-server REST API communication
     # Function to log in the user and store the session token
     def login(self, username: str, password: str) -> bool: 
         """Sends the login request to the server and stores the session token"""
+        self.session_token = None # Clears the session token before sending the login request
         res = self._post("/auth/login", {"username": username, "password": password}) # Sends the username and password to the server
         self.last_error = None if res["success"] else res.get("error") # If the login was successful, it clears the last error message, otherwise it saves the error message from the server
         if res["success"] and isinstance(res["data"], dict): # If the response is successful and the data is a dictionary
