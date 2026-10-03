@@ -20,7 +20,6 @@ class SecBankClient: # Manages the client-server REST API communication
         self.base_url = base_url
         self.session_token = None
         self.last_error = None # Last error message from the server (shown by the UI)
-        self.last_request = None  # Includes (url, headers, body) -> Only for testing purposes
 
     # Method to send POST requests to the server
     def _post(self, path: str, payload: dict, auth: bool = False, timestamp: int = None) -> dict:
@@ -39,7 +38,6 @@ class SecBankClient: # Manages the client-server REST API communication
         if auth:
             headers["Authorization"] = f"Bearer {self.session_token}" # Adds the session token to the headers if the request requires authentication
         url = f"{self.base_url}{path}"
-        self.last_request = (url, headers, body) # Saves the last request for testing purposes
 
         req = urllib.request.Request(url, data=body, headers=headers, method="POST") # Creates the POST request
         try: # Sends the request, waits for the response a timeout of 5 seconds and reads the response
@@ -94,5 +92,6 @@ class SecBankClient: # Manages the client-server REST API communication
 
     # Function to send a transfer request to the server
     def send_transfer(self, payload: dict) -> dict:
-        """Sends a transfer request to the server, it requires authentication and a timestamp"""
-        return self._post("/transfer", payload, auth=True, timestamp=payload["timestamp"]) # Sends the transfer request to the server
+        """Sends a transfer request to the server, adding a timestamp to the payload."""
+        new_payload = {**payload, "timestamp": self.security.get_timestamp()} # Updates the payload with a new timestamp
+        return self._post("/transfer", new_payload, auth=True, timestamp=new_payload["timestamp"]) # Sends the transfer request to the server
