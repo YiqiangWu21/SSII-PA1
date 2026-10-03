@@ -2,12 +2,13 @@ import hashlib
 import hmac
 import json
 import os
-import secrets
 import time
 import uuid
+from dotenv import load_dotenv
+
+load_dotenv() # Loads environment variables from a .env file, if it exists
 
 MIN_KEY_BYTES = 32  # Defines the minimum key length in bytes (>= 256 bits)
-
 
 class SecurityManager:
     # Class constructor
@@ -23,14 +24,8 @@ class SecurityManager:
         """Reads the key (hex, 64 characters) from an environment variable; never in the code."""
         value = os.environ.get(var) # Reads the value of the environment variable
         if not value: # If the environment variable is not set, it raises a RuntimeError with instructions to generate a new key
-            raise RuntimeError(f"Define {var} (genera una con: python -c \"import secrets;print(secrets.token_hex(32))\")")
+            raise RuntimeError(f"Error: La variable {var} no está configurada en el archivo .env o en el sistema.Define {var} (genera una con: python -c \"import secrets;print(secrets.token_hex(32))\")")
         return cls(bytes.fromhex(value))
-
-    # Function to generate a new random key for HMAC operations
-    @staticmethod
-    def generate_key() -> str:
-        """Generates a new random key for HMAC operations."""
-        return secrets.token_hex(32)  # Generates a random 256-bit key and returns it as a hexadecimal string
 
     # Function to generate a random nonce for request signing
     @staticmethod
@@ -56,9 +51,3 @@ class SecurityManager:
         """Generates an HMAC-SHA256 signature for a request, using the nonce and the timestamp."""
         msg = f"{timestamp}\n{nonce}\n".encode("utf-8") + body # Creates the message, by concatenating the timestamp, nonce, and body
         return hmac.new(self.secret_key, msg, hashlib.sha256).hexdigest()
-
-    # Function to verify an HMAC-SHA256 signature for a request
-    def verify_signature(self, body: bytes, nonce: str, timestamp: int, signature: str) -> bool:
-        """Verifies an HMAC-SHA256 signature for a request, using the nonce and the timestamp."""
-        expected = self.generate_signature(body, nonce, timestamp) # Generates a new signature using the same parameters
-        return hmac.compare_digest(expected.encode("utf-8"), signature.encode("utf-8", "replace")) # Constant-time comparison over bytes
