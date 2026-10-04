@@ -1,1 +1,63 @@
-��
+import hashlib
+import hmac
+import os
+import secrets
+
+# Tamaño mínimo de la clave: 256 bits = 32 bytes (requisito RS2b).
+MIN_KEY_BYTES = 32
+
+
+def _load_secret_key() -> bytes:
+    """
+    Carga la clave HMAC desde la variable de entorno SECBANK_HMAC_KEY.
+
+    Si la clave falta, no es hexadecimal, es demasiado corta o es toda ceros,
+    el servidor se niega a arrancar (fail fast). Es preferible no arrancar
+    a arrancar con una clave insegura.
+
+    Para generar una clave válida (CSPRNG, 256 bits):
+        python -c "import secrets; print(secrets.token_hex(32))"
+    """
+    secret_hex = os.environ.get("SECBANK_HMAC_KEY")
+    if not secret_hex:
+        raise RuntimeError(
+            "Falta la variable de entorno SECBANK_HMAC_KEY. "
+            "Genera una con: python -c \"import secrets; print(secrets.token_hex(32))\""
+        )
+
+    try:
+        key = bytes.fromhex(secret_hex)
+    except ValueError:
+        raise RuntimeError("SECBANK_HMAC_KEY no es una cadena hexadecimal válida.")
+
+    if len(key) < MIN_KEY_BYTES:
+        raise RuntimeError(f"SECBANK_HMAC_KEY debe tener al menos {MIN_KEY_BYTES * 8} bits ")
+
+    if key == bytes(len(key)):
+        raise RuntimeError("SECBANK_HMAC_KEY no puede ser una clave de todo ceros.")
+
+    return key
+
+
+SECRET_KEY = _load_secret_key()
+
+
+def generate_hmac(timestamp: str, nonce: str, body: bytes) -> str:
+    """
+    Genera la firma HMAC-SHA256 del mensaje: timestamp, nonce, body.
+    Cliente y servidor deben construir EXACTAMENTE el mismo mensaje.
+    """
+    headers = f"{timestamp}\n{nonce}\n".encode("utf-8")
+    msg = headers + body
+    return hmac.new(SECRET_KEY, msg, hashlib.sha256).hexdigest()
+
+
+def verify_hmac(timestamp: str, nonce: str, body: bytes, signature: str) -> bool:
+    """
+    Verifica la firma recibida comparándola en tiempo constante (RS4).
+    """
+    expected_signature = generate_hmac(timestamp, nonce, body)
+    return secrets.compare_digest(
+        expected_signature.encode("utf-8"),
+        signature.encode("utf-8"),
+    )
