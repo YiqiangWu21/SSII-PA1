@@ -57,18 +57,16 @@ def verify_login(db: Session, username: str, password_plain: str):
         return {"error": "Credenciales inválidas", "status_code": 401}
 
 def process_transaction(db: Session, tx_data: dict):
-    # Bloqueamos transferencias negativas o a cero (Solución al error detectado)
     if tx_data.get("amount", 0) <= 0:
         return {"error": "El importe de la transferencia debe ser mayor que cero.", "status_code": 400}
         
-    # Asumiendo que tu modelo Transaction coincide con los campos de tx_data
     nueva_tx = models.Transaction(
         tx_id=tx_data["tx_id"],
         origin_account=tx_data["origin_account"],
         destination_account=tx_data["destination_account"],
         amount=tx_data["amount"],
         currency=tx_data["currency"],
-        timestamp=tx_data["timestamp"]
+        client_timestamp=tx_data["timestamp"] 
     )
     db.add(nueva_tx)
     db.commit()
