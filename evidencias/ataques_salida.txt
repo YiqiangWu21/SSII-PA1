@@ -1,0 +1,19 @@
+Servidor: http://127.0.0.1:8000
+
+[OK] 0. Login de cliente_prueba
+        respuesta: 200 token de sesión recibido
+
+[OK] 1. Transferencia legítima
+        respuesta: 200 {"status": "registrada", "tx_id": "622a14a6-f680-457d-be5c-9980f9ecf23e"}
+[OK] 2. MitM: cuerpo alterado en tránsito
+        respuesta: 401 Firma inválida.
+[OK] 3. MitM: firma alterada
+        respuesta: 401 Firma inválida.
+[OK] 4. Replay: mismo paquete reenviado
+        respuesta: 401 Nonce ya utilizado.
+[OK] 5. Replay: timestamp caducado (hace 120 s)
+        respuesta: 401 La solicitud ha expirado.
+[OK] 6. Replay: nonce en mayúsculas
+        respuesta: 400 Formato de nonce inválido.
+
+Resultado: 7/7 escenarios como se esperaba
