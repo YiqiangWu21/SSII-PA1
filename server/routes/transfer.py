@@ -29,8 +29,6 @@ def transfer(
     if not user:
         raise HTTPException(status_code=401, detail="Token de sesión inválido")
 
-    # TODO (Miembro 3): Validar X-Timestamp, X-Signature y X-Nonce aquí
-
     # 2. Procesamiento de la transacción (M2)
     tx_data = request.model_dump()
     resultado = business_logic.process_transaction(db, tx_data)
