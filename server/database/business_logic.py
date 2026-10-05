@@ -3,6 +3,7 @@ from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 import datetime
 import secrets
+from sqlalchemy.exc import IntegrityError
 from database import models
 
 ph = PasswordHasher()
@@ -11,6 +12,9 @@ LOCKOUT_DURATION_MINUTES = 15
 DUMMY_HASH = ph.hash("contrasena_falsa_mitigacion")
 
 def register_user(db: Session, username: str, password_plain: str):
+    if len(password_plain) < 8:
+        return {"error": "La contraseña debe tener al menos 8 caracteres.", "status_code": 400}
+
     existing_user = db.query(models.User).filter(models.User.username == username).first()
     if existing_user:
         return {"error": "El usuario ya existe.", "status_code": 409}
@@ -66,11 +70,16 @@ def process_transaction(db: Session, tx_data: dict):
         destination_account=tx_data["destination_account"],
         amount=tx_data["amount"],
         currency=tx_data["currency"],
-        client_timestamp=tx_data["timestamp"] 
+        client_timestamp=tx_data["timestamp"]
     )
     db.add(nueva_tx)
-    db.commit()
-    return {"status": "registrada", "tx_id": tx_data["tx_id"]}
+    
+    try:
+        db.commit()
+        return {"status": "registrada", "tx_id": tx_data["tx_id"]}
+    except IntegrityError:
+        db.rollback()
+        return {"error": "Transacción duplicada (tx_id ya existe).", "status_code": 409}
 
 def validate_and_revoke_token(db: Session, token: str):
     user = db.query(models.User).filter(models.User.active_token == token).first()
